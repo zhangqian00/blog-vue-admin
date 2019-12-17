@@ -1,7 +1,7 @@
 <template>
   <div id="collapseBtn" @click="toggleClick">
 	<svg
-	  :class="{'is-active':isActive}"
+	  :class="{'is-active':!collapseFlag}"
 	  class="hamburger"
 	  viewBox="0 0 1024 1024"
 	  xmlns="http://www.w3.org/2000/svg"
@@ -14,16 +14,21 @@
 </template>
 
 <script>
+	import {mapGetters,mapMutations,mapActions} from 'vuex';
 	export default {
 		data(){
 			return {
-				isActive: true,
+				
 			}
 		},
+		computed: {
+			...mapGetters(['collapseFlag'])
+		},
 		methods: {
-			toggleClick() {
-				// this.$emit('toggleClick')
-				this.isActive = !this.isActive;
+			...mapMutations(['setCollapseFlag']),
+			...mapActions(['toggleSideBar']),
+			toggleClick() { // 点击收起
+				this.setCollapseFlag();
 			}
 		}
 	}

@@ -1,25 +1,29 @@
 <template>
-	<el-container>
-		<el-aside width="240px">
+	<el-container id='home'>
+		<el-aside :class='collapseFlag?"hideSidebar":""'>
 			<el-menu
-			default-active="1"
-			class="el-menu-vertical-demo"
+			:collapse='collapseFlag'
+			:default-active="this.$router.name"
 			background-color="#304156"
 			text-color="#fff"
 			active-text-color="#409eff">
-				<el-submenu index="1">
+				<el-submenu index='1'>
 					<template slot="title">
 						<i class="el-icon-document"></i>
-						<span>文章</span>
+						<span>博客</span>
 					</template>
 					<el-menu-item-group>
-						<el-menu-item index="1-1">文章列表</el-menu-item>
-						<el-menu-item index="1-2">文章创作</el-menu-item>
+						<router-link :to='{name:"blogList"}'>
+							<el-menu-item index="blogList">博客列表</el-menu-item>
+						</router-link>
+						<router-link :to='{name:"createBlog"}'>
+							<el-menu-item index="createBlog">博客创作</el-menu-item>
+						</router-link>
 					</el-menu-item-group>
 				</el-submenu>
 				<el-submenu index="2">
 					<template slot="title">
-						<i class="el-icon-document"></i>
+						<i class="el-icon-setting"></i>
 						<span>标签</span>
 					</template>
 					<el-menu-item-group>
@@ -29,7 +33,7 @@
 				</el-submenu>
 				<el-submenu index="3">
 					<template slot="title">
-						<i class="el-icon-document"></i>
+						<i class="el-icon-setting"></i>
 						<span>留言</span>
 					</template>
 					<el-menu-item-group>
@@ -47,18 +51,24 @@
 			<el-header>
 				<collapseBtn></collapseBtn>
 			</el-header>
-			<el-main>Main</el-main>
+			<el-main>
+				<router-view></router-view>
+			</el-main>
 		</el-container>
 	</el-container>
 </template>
 
 <script>
+	import {mapGetters} from 'vuex';
 	import collapseBtn from '@/components/public/collapseBtn.vue';
 	export default {
 		data(){
 			return {
-
+				
 			}
+		},
+		computed: {
+			...mapGetters(['collapseFlag'])
 		},
 		components: {
 			collapseBtn,
@@ -69,8 +79,29 @@
 <style scoped lang='less'>
 	.el-container {
 		height: 100%;
+		.el-aside {
+			width: 240px !important;
+			box-sizing: border-box;
+			overflow-x: hidden;
+			transition: width 0.28s;
+		}
+		.el-aside.hideSidebar {
+			width: 65px !important;
+		}
 		.el-menu {
 			height: 100%;
+			.el-submenu__title:hover,.submenu-title-noDropdown:hover {
+				outline: 0;
+			    background-color: #263445!important;
+			}
+			.el-menu-item:focus, .el-menu-item:hover,.el-menu-item.is-active {
+			    outline: 0;
+			    background-color: #263445!important;
+			}
+		}
+		.el-menu:not(.el-menu--collapse) {
+		    width: 240px;
+		    box-sizing: border-box;
 		}
 		.el-header {
 			height: 50px;
@@ -83,16 +114,8 @@
 		    position: relative;
 		}
 	}
-	  
-	  // .el-aside {
-	  //   background-color: #D3DCE6;
-	  //   color: #333;
-	  //   line-height: 200px;
-	  // }
-	  
-	  // .el-main {
-	  //   background-color: #E9EEF3;
-	  //   color: #333;
-	  //   line-height: 160px;
-	  // }
+</style>
+
+<style>
+	
 </style>
