@@ -17,20 +17,48 @@
 			<el-table
 		    :data="tableData"
 		    border
+		    show-overflow-tooltip
 		    style="width: 100%">
 			    <el-table-column
-			      prop="date"
-			      label="日期"
+			      prop="title"
+			      label="标题"
+			      show-overflow-tooltip
+			      width="320">
+			    </el-table-column>
+			    <el-table-column
+			      prop="author"
+			      label="作者"
+			      show-overflow-tooltip
+			      width="120">
+			    </el-table-column>
+			    <el-table-column
+			      prop="keywords"
+			      label="关键字"
+			      show-overflow-tooltip
 			      width="180">
 			    </el-table-column>
 			    <el-table-column
-			      prop="name"
-			      label="姓名"
+			      prop="coverSrc"
+			      label="封面图"
+			      show-overflow-tooltip
 			      width="180">
 			    </el-table-column>
 			    <el-table-column
-			      prop="address"
-			      label="地址">
+			      prop="blogTags"
+			      label="分类标签"
+			      width="140">
+			    </el-table-column>
+			    <el-table-column
+			      prop="createDate"
+			      label="创建时间"
+			      width="170">
+			    </el-table-column>
+			    <el-table-column
+			      label="操作">
+			    	<template slot-scope="scope">
+				        <el-button size="mini">编辑</el-button>
+				        <el-button size="mini" type="danger">删除</el-button>
+				    </template>
 			    </el-table-column>
 		    </el-table>
 		</div>
@@ -49,45 +77,13 @@
 			return {
 				blogTitle: '',
 				tableData: [{
-		          date: '2016-05-02',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1518 弄'
-		        }, {
-		          date: '2016-05-04',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1517 弄'
-		        }, {
-		          date: '2016-05-01',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1519 弄'
-		        }, {
-		          date: '2016-05-03',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1516 弄'
-		        }, {
-		          date: '2016-05-03',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1516 弄'
-		        }, {
-		          date: '2016-05-03',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1516 弄'
-		        }, {
-		          date: '2016-05-03',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1516 弄'
-		        }, {
-		          date: '2016-05-03',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1516 弄'
-		        }, {
-		          date: '2016-05-03',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1516 弄'
-		        }, {
-		          date: '2016-05-03',
-		          name: '王小虎',
-		          address: '上海市普陀区金沙江路 1516 弄'
+					keyid: '1234567890',
+					title: '测试测试测试测试测试测试测试测试',
+					author: 'zhangqian00',
+					keywords: '关键字关键字',
+					coverSrc: 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3118956596,1809570833&fm=26&gp=0.jpg',
+					blogTags: ['Vue'],
+		            createDate: '2016-05-02 12:01:16'
 		        }]
 			}
 		}
