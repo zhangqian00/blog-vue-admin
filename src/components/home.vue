@@ -4,6 +4,7 @@
 			<el-menu
 			:collapse='collapseFlag'
 			:default-active="this.$router.name"
+			default-active="blogList"
 			background-color="#304156"
 			text-color="#fff"
 			active-text-color="#409eff">

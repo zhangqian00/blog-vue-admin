@@ -3,59 +3,75 @@
 		<div class="searchDiv">
 			<div class="item">
 				<el-input
-				  placeholder="标题/描述"
+				  placeholder="请输入文章标题"
 				  v-model="blogTitle"
 				  clearable>
 				</el-input>
 			</div>
 			<div class="item btnItem">
-				<el-button type="primary" size="small" icon="el-icon-search">搜索</el-button>
+				<el-button type="primary" size="small" icon="el-icon-search" @click='getList(1)'>搜索</el-button>
 				<el-button type="success" size="small" icon="el-icon-circle-plus-outline">新增</el-button>
 			</div>
 		</div>
-		<div class="list">
+		<div class="list" v-loading='listLoading'>
 			<el-table
 		    :data="tableData"
 		    border
 		    show-overflow-tooltip
 		    style="width: 100%">
+		    	<el-table-column
+			      prop="rownumber"
+			      label="序号"
+			      align='center'
+			      width="90">
+			    </el-table-column>
 			    <el-table-column
 			      prop="title"
 			      label="标题"
 			      show-overflow-tooltip
-			      width="320">
+			      width="300">
 			    </el-table-column>
 			    <el-table-column
 			      prop="author"
 			      label="作者"
 			      show-overflow-tooltip
-			      width="120">
+			      align='center'
+			      width="160">
 			    </el-table-column>
 			    <el-table-column
 			      prop="keywords"
 			      label="关键字"
 			      show-overflow-tooltip
-			      width="180">
+			      width="200">
 			    </el-table-column>
 			    <el-table-column
-			      prop="coverSrc"
+			      prop="coversrc"
 			      label="封面图"
 			      show-overflow-tooltip
-			      width="180">
+			      width="200">
 			    </el-table-column>
 			    <el-table-column
-			      prop="blogTags"
 			      label="分类标签"
-			      width="140">
+			      show-overflow-tooltip
+			      align='center'
+			      width="220">
+			      <template slot-scope='scope'>
+			      	<el-tag size="mini" v-for='(item,index) in scope["row"]["blogtags2"]'>{{item}}</el-tag>
+			      </template>
 			    </el-table-column>
 			    <el-table-column
-			      prop="createDate"
 			      label="创建时间"
-			      width="170">
+			      align='center'
+			      width="190">
+			      <template slot-scope="scope">
+			      	{{scope.row.createdate|dateFormat2}}
+			      </template>
 			    </el-table-column>
 			    <el-table-column
+			    	align='center'
 			      label="操作">
 			    	<template slot-scope="scope">
+				        <el-button size="mini" type='primary'>查看</el-button>
 				        <el-button size="mini">编辑</el-button>
 				        <el-button size="mini" type="danger">删除</el-button>
 				    </template>
@@ -63,11 +79,12 @@
 		    </el-table>
 		</div>
 	    <el-pagination
-		  background
-		  layout="prev,pager,next,total"
-		  :total="1000">
+	    	v-if='listTotal'
+		    background
+		    @current-change='getList'
+		    layout="prev,pager,next,total"
+		    :total="listTotal">
 		</el-pagination>
-
 	</div>
 </template>
 
@@ -75,16 +92,43 @@
 	export default {
 		data(){
 			return {
+				listLoading: false,
 				blogTitle: '',
-				tableData: [{
-					keyid: '1234567890',
-					title: '测试测试测试测试测试测试测试测试',
-					author: 'zhangqian00',
-					keywords: '关键字关键字',
-					coverSrc: 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3118956596,1809570833&fm=26&gp=0.jpg',
-					blogTags: ['Vue'],
-		            createDate: '2016-05-02 12:01:16'
-		        }]
+				tableData: [],
+		        listTotal: 0,
+			}
+		},
+		created(){
+			this.getList(1);
+		},
+		methods: {
+			getList(page){ // 获取列表
+				this.listLoading = true;
+				var params = {
+					pageindex: page,
+					pagesize: 10
+				};
+				if(this.blogTitle.replace(/\s*/g,"")){
+					params.blogtitle = this.blogTitle.replace(/\s*/g,"");
+				}
+				this.$ajax.post(this.$httpConfig.blogList,params).then((res)=>{
+					if(res.data.ErrorCode.Code === 0){
+						this.tableData = res.data.DataContext.result||[];
+						this.tableData.forEach((el)=>{
+							if(el.blogtags){
+								el.blogtags2 = el.blogtags.split(',');
+							}
+						});
+						this.listTotal = res.data.DataContext.total||0;
+						this.listLoading = false;
+					}
+				}).catch((err)=>{
+					this.$message.error(err);
+					this.listLoading = false;
+				});
+			},
+			pageChange(page){
+				console.log(page)
 			}
 		}
 	}
@@ -107,12 +151,21 @@
 	}
 	.list {
 		height: 580px;
-		
+		margin-bottom: 51px;
 	}
 </style>
 <style>
 	#blogList .searchDiv .el-input__inner {
 		height: 30px;
 		line-height: 30px;
+	}
+	#blogList .searchDiv .el-input__icon {
+		line-height: 30px;
+	}
+	#blogList .el-table thead .cell {
+		text-align: center;
+	}
+	#blogList .el-table td .el-tag {
+		margin: 0 5px;
 	}
 </style>
