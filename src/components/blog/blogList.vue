@@ -23,7 +23,7 @@
 			      prop="rownumber"
 			      label="序号"
 			      align='center'
-			      width="90">
+			      width="60">
 			    </el-table-column>
 			    <el-table-column
 			      prop="title"
@@ -44,6 +44,18 @@
 			      show-overflow-tooltip
 			      width="200">
 			    </el-table-column>
+				<el-table-column
+			      prop="blogtype"
+			      label="类型"
+				  align='center'
+			      show-overflow-tooltip
+			      width="100">
+				  	<template slot-scope='scope'>
+						<el-tag size="mini" v-if='scope.row.blogtype==="yc"'>原创</el-tag>
+						<el-tag size="mini" type="warning" v-if='scope.row.blogtype==="zz"'>转载</el-tag>
+						<el-tag size="mini" type="warning" v-if='scope.row.blogtype==="fy"'>翻译</el-tag>
+					</template>
+			    </el-table-column>
 			    <el-table-column
 			      prop="coversrc"
 			      label="封面图"
@@ -56,15 +68,25 @@
 			      align='center'
 			      width="220">
 			      <template slot-scope='scope'>
-			      	<el-tag size="mini" v-for='(item,index) in scope["row"]["blogtags2"]'>{{item}}</el-tag>
+			      	<el-tag size="mini" v-for='(item,index) in scope["row"]["blogtags2"]' :key='index'>{{item}}</el-tag>
 			      </template>
 			    </el-table-column>
 			    <el-table-column
 			      label="创建时间"
 			      align='center'
-			      width="190">
+			      width="130">
 			      <template slot-scope="scope">
-			      	{{scope.row.createdate|dateFormat2}}
+			      	{{scope.row.createdate|dateFormat}}
+			      </template>
+			    </el-table-column>
+				<el-table-column
+			      label="状态"
+				  prop='fbzt'
+			      align='center'
+			      width="130">
+			      <template slot-scope="scope">
+			      	<el-tag type="success" size="mini" v-if='scope.row.fbzt===1'>已发布</el-tag>
+			      	<el-tag type="info" size="mini" v-else>未发布</el-tag>
 			      </template>
 			    </el-table-column>
 			    <el-table-column

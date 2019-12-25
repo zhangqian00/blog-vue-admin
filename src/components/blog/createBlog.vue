@@ -9,7 +9,7 @@
 				</el-col>
 				<el-col :span='6'>
 					<el-form-item label="作者：" prop="author">
-						<el-input v-model="ruleForm.author" disabled></el-input>
+						<el-input v-model="ruleForm.author" readonly></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :span='6'>
@@ -18,11 +18,11 @@
 					</el-form-item>
 				</el-col>
 				<el-col :span='6'>
-					<el-form-item label="博客类型：" prop="blogType">
+					<el-form-item label="博客类型：">
 						<el-select v-model="ruleForm.blogType" placeholder="请选择博客类型">
-							<el-option label="原创" value="0"></el-option>
-							<el-option label="转载" value="1"></el-option>
-							<el-option label="翻译" value="2"></el-option>
+							<el-option label="原创" value="yc"></el-option>
+							<el-option label="转载" value="zz"></el-option>
+							<el-option label="翻译" value="fy"></el-option>
 					    </el-select>
 					</el-form-item>
 				</el-col>
@@ -37,7 +37,7 @@
 					</el-form-item>
 				</el-col>
 				<el-col :span='20'>
-					<el-form-item label="分类标签：" style='margin-bottom:0;'>
+					<el-form-item label="分类标签：" prop='blogTags' style='margin-bottom:0;'>
 					    <el-checkbox-group v-model="ruleForm.blogTags">
 					      <el-checkbox label="JavaScript" name="JavaScript"></el-checkbox>
 					      <el-checkbox label="Vue" name="Vue"></el-checkbox>
@@ -47,8 +47,9 @@
 					</el-form-item>
 				</el-col>
 				<el-col :span='20'>
-					<el-form-item>
-						<el-button type="primary" size="medium" @click="submitForm('ruleForm')">提交</el-button>
+					<el-form-item style='text-align:center;'>
+						<el-button type="primary" size="medium" @click="submitForm('ruleForm')">保存</el-button>
+						<el-button type="success" size="medium" @click="">保存并发布</el-button>
 					</el-form-item>
 				</el-col>
 			</el-form>
@@ -66,10 +67,11 @@
 					title: '',
 					author: 'zhangqian00',
 					keywords: '',
-					blogType: '0',
+					blogType: 'yc',
 					describe: '',
 					coverSrc: '',
-					blogTags: []
+					blogTags: [],
+					simplemde: null,
 		        },
 		        rules: {
 					title: [
@@ -79,8 +81,11 @@
 					author: [
 						{ required: true, message: '请输入作者', trigger: 'blur' }
 					],
-					blogType: [
-						{ required: true, message: '请选择博客类型', trigger: 'blur' }
+					keywords: [
+						{ required: true, message: '请输入关键字', trigger: 'blur' }
+					],
+					blogTags: [
+						{ type: 'array', required: true, message: '请至少选择一个标签', trigger: 'change' }
 					],
 		        }
 			}
@@ -89,20 +94,44 @@
 			this.initEdit();
 		},
 		methods: {
-			submitForm(formName) {
+			submitForm(formName) { // 点击提交
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						alert('submit!');
+						var markDown = this.simplemde.value();
+						var html = this.simplemde.markdown(markDown);
+						this.$confirm('确认提交?', '提示', {
+							confirmButtonText: '确认',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							var params = {
+								title: this.ruleForm.title,
+								author: this.ruleForm.author,
+								keywords: this.ruleForm.keywords,
+								blogType: this.ruleForm.blogType,
+								describe: this.ruleForm.describe,
+								coverSrc: this.ruleForm.coverSrc,
+								blogTags: this.ruleForm.blogTags.join(','),
+							};
+							console.log(params)
+							this.$ajax.post(this.$httpConfig.addBlog,params).then((res)=>{
+								if(res.data.ErrorCode.Code == 0){
+									
+								}
+							});
+						}).catch(() => {
+						          
+						});
 					} else {
 						console.log('error submit!!');
 						return false;
 					}
 				});
 			},
-			initEdit(){
-				var simplemde = new SimpleMDE({
+			initEdit(){ // 初始化编辑器
+				this.simplemde = new SimpleMDE({
 					element: document.getElementById("editBlock"), // 容器
-					spellChecker: false, // 
+					// spellChecker: false, // 
 				    autofocus: true,
 				    // autoDownloadFontAwesome: true, // 是否下载FontAwesome
 				    placeholder: "输入内容...",
@@ -112,8 +141,8 @@
 				        delay: 1000,
 				    },
 				    tabSize: 4,
-				    status: false,
-				    lineWrapping: false,
+				    // status: false,
+				    // lineWrapping: false,
 				    renderingConfig: {
 				        codeSyntaxHighlighting: true // 代码高亮，需引入highlight.js
 				    },
