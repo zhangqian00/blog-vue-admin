@@ -10,12 +10,12 @@ const store = new Vuex.Store({
 	getters:{
 		collapseFlag(state){ // 获取左侧菜单是否收起
 			return state.collapseFlag;
-		}
+		},
 	},
 	mutations: {
 		setCollapseFlag(state){ // 设置左侧菜单是否收起
 			state.collapseFlag = !state.collapseFlag;
-		}
+		},
 	},
 	actions: {
 		toggleSideBar({commit}){

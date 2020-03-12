@@ -29,14 +29,14 @@
 			      prop="title"
 			      label="标题"
 			      show-overflow-tooltip
-			      width="300">
+			      width="200">
 			    </el-table-column>
 			    <el-table-column
 			      prop="author"
 			      label="作者"
 			      show-overflow-tooltip
 			      align='center'
-			      width="160">
+			      width="130">
 			    </el-table-column>
 			    <el-table-column
 			      prop="keywords"
@@ -83,9 +83,9 @@
 			      label="状态"
 				  prop='fbzt'
 			      align='center'
-			      width="130">
+			      width="100">
 			      <template slot-scope="scope">
-			      	<el-tag type="success" size="mini" v-if='scope.row.fbzt===1'>已发布</el-tag>
+			      	<el-tag type="success" size="mini" v-if='scope.row.fbzt==1'>已发布</el-tag>
 			      	<el-tag type="info" size="mini" v-else>未发布</el-tag>
 			      </template>
 			    </el-table-column>
@@ -172,6 +172,7 @@
 		}
 	}
 	.list {
+		width: 1610px;
 		height: 580px;
 		margin-bottom: 51px;
 	}

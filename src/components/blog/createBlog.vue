@@ -48,8 +48,8 @@
 				</el-col>
 				<el-col :span='20'>
 					<el-form-item style='text-align:center;'>
-						<el-button type="primary" size="medium" @click="submitForm('ruleForm')">保存</el-button>
-						<el-button type="success" size="medium" @click="">保存并发布</el-button>
+						<el-button type="primary" size="medium" @click="submitForm(0)">保存</el-button>
+						<el-button type="success" size="medium" @click="submitForm(1)">保存并发布</el-button>
 					</el-form-item>
 				</el-col>
 			</el-form>
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+	import {mapMutations} from 'vuex';
 	import SimpleMDE from 'simplemde';
 	export default {
 		data(){
@@ -94,8 +95,9 @@
 			this.initEdit();
 		},
 		methods: {
-			submitForm(formName) { // 点击提交
-				this.$refs[formName].validate((valid) => {
+			...mapMutations(['setRouterName']),
+			submitForm(zt) { // 点击提交
+				this.$refs['ruleForm'].validate((valid) => {
 					if (valid) {
 						var markDown = this.simplemde.value();
 						var html = this.simplemde.markdown(markDown);
@@ -108,20 +110,27 @@
 								title: this.ruleForm.title,
 								author: this.ruleForm.author,
 								keywords: this.ruleForm.keywords,
-								blogType: this.ruleForm.blogType,
+								blogtype: this.ruleForm.blogType,
 								describe: this.ruleForm.describe,
-								coverSrc: this.ruleForm.coverSrc,
-								blogTags: this.ruleForm.blogTags.join(','),
+								coversrc: this.ruleForm.coverSrc,
+								blogtags: this.ruleForm.blogTags.join(','),
+								fbzt: zt,
+								blogcontent: this.simplemde.value()
 							};
-							console.log(params)
 							this.$ajax.post(this.$httpConfig.addBlog,params).then((res)=>{
 								if(res.data.ErrorCode.Code == 0){
-									
+									if(res.data.DataContext){
+										this.$message({
+								            message: zt==0?'保存成功':'发布成功',
+								            type: 'success'
+								        });
+								        this.$router.push('/blogList');
+									}
 								}
+							}).catch((err)=>{
+								this.$message.error(err);
 							});
-						}).catch(() => {
-						          
-						});
+						}).catch(() => {});
 					} else {
 						console.log('error submit!!');
 						return false;
@@ -153,5 +162,18 @@
 </script>
 
 <style scoped lang='less'>
+	
+</style>
+
+<style lang='less'>
+	#createBlog {
+		.CodeMirror,
+		.editor-preview-side {
+			line-height: 30px;
+		}
+		.CodeMirror .cm-spell-error:not(.cm-url):not(.cm-comment):not(.cm-tag):not(.cm-word) {
+			background: none;
+		}
+	} 
 	
 </style>

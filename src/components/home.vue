@@ -3,8 +3,7 @@
 		<el-aside :class='collapseFlag?"hideSidebar":""'>
 			<el-menu
 			:collapse='collapseFlag'
-			:default-active="this.$router.name"
-			default-active="blogList"
+			:default-active="routerName"
 			background-color="#304156"
 			text-color="#fff"
 			active-text-color="#409eff">
@@ -65,7 +64,15 @@
 	export default {
 		data(){
 			return {
-				
+				routerName: this.$route.name,
+			}
+		},
+		watch: {
+			'$route': {
+				handler: function(val,oldVal){
+					this.routerName = val.name;
+				},
+				deep: true
 			}
 		},
 		computed: {
@@ -73,6 +80,9 @@
 		},
 		components: {
 			collapseBtn,
+		},
+		created(){
+			
 		}
 	}
 </script>
